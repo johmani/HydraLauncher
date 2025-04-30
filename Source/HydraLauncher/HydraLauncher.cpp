@@ -512,28 +512,28 @@ public:
 
 					ImGui::BeginChild("Left", ImVec2(Math::max(ImGui::GetContentRegionAvail().x / 10, 150 * scale), 0), ImGuiChildFlags_AlwaysUseWindowPadding);
 
-					if (ImGui::SelectabelButton(Icon_Box"    Projects", { -1 , 0 }, selectedPage == Page::Projects))
+					if (ImGui::SelectableButton(Icon_Box"    Projects", { -1 , 0 }, selectedPage == Page::Projects))
 					{
 						textFilter.Clear();
 						selectedPage = Page::Projects;
 						Serialize();
 					}
 
-					if (ImGui::SelectabelButton(Icon_Plugin"    Plugins", { -1 , 0 }, selectedPage == Page::Plugins))
+					if (ImGui::SelectableButton(Icon_Plugin"    Plugins", { -1 , 0 }, selectedPage == Page::Plugins))
 					{
 						textFilter.Clear();
 						selectedPage = Page::Plugins;
 						Serialize();
 					}
 
-					if (ImGui::SelectabelButton(Icon_Download"    Install", { -1 , 0 }, selectedPage == Page::Install))
+					if (ImGui::SelectableButton(Icon_Download"    Install", { -1 , 0 }, selectedPage == Page::Install))
 					{
 						textFilter.Clear();
 						selectedPage = Page::Install;
 						Serialize();
 					}
 
-					if (ImGui::SelectabelButton(Icon_Cube"    Templates", { -1 , 0 }, selectedPage == Page::Templates))
+					if (ImGui::SelectableButton(Icon_Cube"    Templates", { -1 , 0 }, selectedPage == Page::Templates))
 					{
 						textFilter.Clear();
 						selectedPage = Page::Templates;
@@ -641,11 +641,11 @@ public:
 											auto sln = std::filesystem::path(std::format("{}/{}.sln", project.path, project.name)).lexically_normal();
 											if (std::filesystem::exists(sln))
 											{
-												Utils::ExecCommand(sln.string().c_str(),nullptr, nullptr, true);
+												FileSystem::Open(sln);
 											}
 											else if (std::filesystem::exists(sln.parent_path()))
 											{
-												Jops::SubmitTask([this, sln, &project]() { RunProjectPremake(project); Utils::ExecCommand(sln.string().c_str(), nullptr, nullptr, false); });
+												Jops::SubmitTask([this, sln, &project]() { RunProjectPremake(project); FileSystem::Open(sln); });
 											}
 										}
 									}
@@ -1634,14 +1634,14 @@ public:
 								if (off > 0.0f)
 									ImGui::ShiftCursorX(off);
 
-								if (ImGui::SelectabelButton("Templates", { buttonSize * scale, -1 }, createProjectStage == 0))
+								if (ImGui::SelectableButton("Templates", { buttonSize * scale, -1 }, createProjectStage == 0))
 								{
 									createProjectStage = CreateProjectStage::Templates;
 								}
 
 								ImGui::SameLine();
 
-								if (ImGui::SelectabelButton("PLugins", { buttonSize * scale, -1 }, createProjectStage == 1))
+								if (ImGui::SelectableButton("PLugins", { buttonSize * scale, -1 }, createProjectStage == 1))
 								{
 									createProjectStage = CreateProjectStage::Plugins;
 								}
