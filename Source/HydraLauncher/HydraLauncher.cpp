@@ -2129,12 +2129,19 @@ public:
 						FileSystem::Copy(assetsDir, pluginOutDir / "Assets", copyOptions);
 
 					// copy plugins binaries
-					for (const auto& e : std::filesystem::directory_iterator(binDir))
+					if (std::filesystem::exists(binDir))
 					{
-						if (e.is_regular_file() && e.path().extension() == c_SharedLibExtension)
+						for (const auto& e : std::filesystem::directory_iterator(binDir))
 						{
-							FileSystem::Copy(e.path(), pluginOutBinaries, copyOptions);
+							if (e.is_regular_file() && e.path().extension() == c_SharedLibExtension)
+							{
+								FileSystem::Copy(e.path(), pluginOutBinaries, copyOptions);
+							}
 						}
+					}
+					else
+					{
+						HE_ERROR("{} not exists", binDir.string());
 					}
 				}
 			}
