@@ -22,7 +22,7 @@ export namespace Utils {
 	public:
 		~Process();
 	
-		bool Start(const char* command, bool showOutbut = false, const char* workingDir = nullptr);
+		bool Start(const char* command, bool showOutput = false, const char* workingDir = nullptr);
 		void Wait();
 		void Kill();
 

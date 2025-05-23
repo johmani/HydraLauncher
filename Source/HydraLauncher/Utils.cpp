@@ -18,7 +18,7 @@ namespace Utils {
 		}
 	}
 
-	bool Process::Start(const char* command, bool showOutbut, const char* workingDir)
+	bool Process::Start(const char* command, bool showOutput, const char* workingDir)
 	{
 		PROCESS_INFORMATION pi;
 
@@ -28,7 +28,7 @@ namespace Utils {
 		BOOL result = CreateProcessA(
 			NULL, (LPSTR)command,
 			NULL, NULL, TRUE,
-			showOutbut ? NULL : CREATE_NO_WINDOW,
+			showOutput ? NULL : CREATE_NO_WINDOW,
 			NULL,
 			workingDir,
 			&si, &pi
