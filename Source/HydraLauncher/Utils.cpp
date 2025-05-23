@@ -67,7 +67,7 @@ namespace Utils {
 		}
 	}
 
-	bool ExecCommand(const char* command, std::string* output, const char* workingDir, bool async, const std::function<void()>& onComplete)
+	bool ExecCommand(const char* command, std::string* output, const char* workingDir, bool async, bool showOutput, const std::function<void()>& onComplete)
 	{
 		const char* shellPrefix = command ? "cmd.exe /C " : "";
 		constexpr size_t bufferSize = 2048;
@@ -104,11 +104,7 @@ namespace Utils {
 		BOOL result = CreateProcessA(
 			NULL, (LPSTR)fullCmdBuffer,
 			NULL, NULL, TRUE,
-#ifdef HE_DEBUG
-			NULL,
-#else
-			CREATE_NO_WINDOW,
-#endif 
+			showOutput ? NULL : CREATE_NO_WINDOW,
 			NULL,
 			workingDir,
 			&si, &pi

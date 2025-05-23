@@ -33,7 +33,7 @@ export namespace Utils {
 		uint32_t dwThreadId;
 	};
 	
-	bool ExecCommand(const char* command, std::string* output = nullptr, const char* workingDir = nullptr, bool async = false, const std::function<void()>& onComplete = {});
+	bool ExecCommand(const char* command, std::string* output = nullptr, const char* workingDir = nullptr, bool async = false, bool showOutput = false, const std::function<void()>& onComplete = {});
 
 	enum class AppDataType 
 	{

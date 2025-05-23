@@ -291,7 +291,7 @@ public:
 			std::filesystem::create_directories(pluginsDir);
 
 			static std::string str;
-			Utils::ExecCommand(c_FindMsBuildCmd, &str, nullptr, true, [this]() {
+			Utils::ExecCommand(c_FindMsBuildCmd, &str, nullptr, true, false, [this]() {
 				if (!str.empty())
 				{
 					msBuildPath = std::filesystem::path(str).parent_path().string();
@@ -1888,7 +1888,8 @@ public:
 			project.includSourceCode ? "true" : "false"
 		);
 
-		Utils::ExecCommand(cmd.c_str(), nullptr, premakeDir.c_str(), false);
+		Utils::ExecCommand(cmd.c_str(), nullptr, premakeDir.c_str(), false, showBuildOutput);
+
 	}
 
 	void ChangeEngineForProject(Project& project, Engine& InstanceInfo)
@@ -2154,7 +2155,7 @@ public:
 			auto executable = currentOutputDir / (proj.name + c_ExecutableExtension);
 			auto executableStr = std::format("\"{}\"", executable.string());
 			if (buildAndRunProject && std::filesystem::exists(executable))
-				Utils::ExecCommand(executableStr.c_str(),nullptr, currentOutputDir.string().c_str(), true);
+				Utils::ExecCommand(executableStr.c_str(),nullptr, currentOutputDir.string().c_str(), true, showBuildOutput);
 		});
 	}
 
@@ -2352,7 +2353,7 @@ public:
 			// Fetch updated file , Reload from updated file
 			{
 				std::string cmd = std::format("curl -L -o \"{}\" \"{}\"", remoteInfoFilePath.string(), c_RemotePluginsURL); // >nul 2>&1
-				Utils::ExecCommand(cmd.c_str(), nullptr, nullptr, true, [this]() {
+				Utils::ExecCommand(cmd.c_str(), nullptr, nullptr, true, false, [this]() {
 					DeserializeAndAddRemoteInfo();
 				});
 			}
