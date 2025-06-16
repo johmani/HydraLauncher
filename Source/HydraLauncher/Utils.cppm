@@ -240,19 +240,20 @@ export namespace Utils {
 	{
 		if (customTitlebar)
 		{
-			float dpi = ImGui::GetWindowDpiScale();
-			float scale = ImGui::GetIO().FontGlobalScale * dpi;
+            auto& io = ImGui::GetIO();
+			float dpiScale = ImGui::GetWindowDpiScale();
+			float scale = ImGui::GetIO().FontGlobalScale * dpiScale;
 			ImGuiStyle& style = ImGui::GetStyle();
-			static float yframePadding = 8.0f * dpi;
+			static float yframePadding = 8.0f * dpiScale;
 			bool isMaximized = HE::Application::GetWindow().IsMaximize();
-			auto& title = HE::Application::GetApplicationDesc().windowDesc.title;
+			auto& title = HE::Application::GetWindow().desc.title;
 			bool isIconClicked = false;
 
 			{
 				ImGui::ScopedStyle fbs(ImGuiStyleVar_FrameBorderSize, 0.0f);
 				ImGui::ScopedStyle wbs(ImGuiStyleVar_WindowBorderSize, 0.0f);
 				ImGui::ScopedStyle wr(ImGuiStyleVar_WindowRounding, 0.0f);
-				ImGui::ScopedStyle wp(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 6.0f * dpi));
+				ImGui::ScopedStyle wp(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 6.0f * dpiScale));
 				ImGui::ScopedStyle fp(ImGuiStyleVar_FramePadding, ImVec2{ 0, yframePadding });
 				ImGui::ScopedColor scWindowBg(ImGuiCol_WindowBg, ImVec4{ 1.0f, 0.0f, 0.0f, 0.0f });
 				ImGui::ScopedColor scMenuBarBg(ImGuiCol_MenuBarBg, ImVec4{ 0.0f, 1.0f, 0.0f, 0.0f });
@@ -260,23 +261,25 @@ export namespace Utils {
 			}
 
 			const ImVec2 windowPadding = style.WindowPadding;
-			const ImVec2 titlebarMin = ImGui::GetCursorScreenPos() - ImVec2(windowPadding.x,0);
-			const ImVec2 titlebarMax = ImGui::GetCursorScreenPos() + ImGui::GetWindowSize() - ImVec2(windowPadding.x, 0);
+			const ImVec2 titlebarMin = ImGui::GetCursorPos() - ImVec2(windowPadding.x,0);
+			const ImVec2 titlebarMax = ImGui::GetCursorPos() + ImGui::GetWindowSize() - ImVec2(windowPadding.x, 0);
 			auto* fgDrawList = ImGui::GetForegroundDrawList();
 			auto* bgDrawList = ImGui::GetBackgroundDrawList();
 
 			ImGui::SetCursorPos(titlebarMin);
 
-			//fgDrawList->AddRect(titlebarMin, titlebarMax, ImColor32(255, 0, 0, 255));
-			//fgDrawList->AddRect(
-			//	ImVec2{ titlebarMax.x / 2 - ImGui::CalcTextSize(title.c_str()).x, titlebarMin.y },
-			//	ImVec2{ titlebarMax.x / 2 + ImGui::CalcTextSize(title.c_str()).x, titlebarMax.y },
-			//	ImColor32(255, 0, 0, 255)
-			//);
+			ImVec2 screenPos = ImGui::GetCursorScreenPos();
+
+            //fgDrawList->AddRect(screenPos + titlebarMin, screenPos + titlebarMax, ImColor32(255, 0, 0, 255));
+            //fgDrawList->AddRect(
+            //    ImVec2{ screenPos.x + titlebarMax.x / 2 - ImGui::CalcTextSize(title.c_str()).x, screenPos.y + titlebarMin.y },
+            //    ImVec2{ screenPos.x + titlebarMax.x / 2 + ImGui::CalcTextSize(title.c_str()).x, screenPos.y + titlebarMax.y },
+            //    ImColor32(255, 0, 0, 255)
+            //);
 			
 			bgDrawList->AddRectFilledMultiColor(
-				titlebarMin,
-				titlebarMax,
+				screenPos + titlebarMin,
+				screenPos + titlebarMax,
 				ImColor32(50, 70, 50, 255),
 				ImColor32(50, 50, 50, 255),
 				ImColor32(50, 50, 50, 255),
@@ -284,8 +287,8 @@ export namespace Utils {
 			);
 		
 			bgDrawList->AddRectFilledMultiColor(
-				titlebarMin,
-				ImGui::GetCursorScreenPos() + ImGui::GetWindowSize() - ImVec2(ImGui::GetWindowSize().x * 3 / 4, 0),
+                screenPos + titlebarMin,
+                screenPos + ImGui::GetCursorPos() + ImGui::GetWindowSize() - ImVec2(ImGui::GetWindowSize().x * 3 / 4, 0),
 				ImGui::GetColorU32(ImVec4(0.278431f, 0.701961f, 0.447059f, 1.00f)),
 				ImColor32(50, 50, 50, 0),
 				ImColor32(50, 50, 50, 0),
@@ -293,10 +296,16 @@ export namespace Utils {
 			);
 
 
-			if (!ImGui::IsAnyItemHovered() && !HE::Application::GetWindow().IsFullScreen() && ImGui::IsWindowHovered())
-				HE::Application::GetWindow().SetTitleBarState(true);
-			else
-				HE::Application::GetWindow().SetTitleBarState(false);
+            if (!ImGui::IsAnyItemHovered() && !HE::Application::GetWindow().IsFullScreen() && ImGui::IsWindowHovered())
+            {
+                HE::Application::GetWindow().isTitleBarHit = true;
+                io.ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange;
+            }
+            else
+            {
+                HE::Application::GetWindow().isTitleBarHit = false;
+                io.ConfigFlags &= ~ImGuiConfigFlags_NoMouseCursorChange;
+            }
 
 			float ySpace = ImGui::GetContentRegionAvail().y;
 
@@ -314,9 +323,7 @@ export namespace Utils {
 				if (off > 0.0f)
 					ImGui::ShiftCursorX(off);
 
-				//ImGui::ShiftCursorY(-2 * scale);
 				ImGui::TextUnformatted(title.c_str());
-				//ImGui::ShiftCursorY(2 * scale);
 
 				ImGui::SetCursorPos(cursorPos);
 			}
@@ -355,11 +362,11 @@ export namespace Utils {
 
 				{
 					ImGui::ScopedColor sc0(ImGuiCol_Button, ImVec4{ 0.0f, 0.0f, 0.0f, 0.0f });
-					if(ImGui::ImageButton("min", min, { ySpace, ySpace })) HE::Application::GetWindow().MinimizeWindow();
+					if(ImGui::ImageButton("min", min, { ySpace, ySpace })) HE::Application::GetWindow().Minimize();
 
 					ImGui::SameLine();
 					if (ImGui::ImageButton("max_res", isMaximized ? res : max, { ySpace, ySpace })) 
-						isMaximized ? HE::Application::GetWindow().RestoreWindow() : HE::Application::GetWindow().MaximizeWindow();
+						isMaximized ? HE::Application::GetWindow().Restore() : HE::Application::GetWindow().Maximize();
 				}
 
 				{
