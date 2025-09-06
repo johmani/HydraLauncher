@@ -214,7 +214,7 @@ export namespace Utils {
 		colors[ImGuiCol_TableBorderStrong] = ImVec4(0.31f, 0.31f, 0.35f, 1.00f);   // Prefer using Alpha=1.0 here
 		colors[ImGuiCol_TableBorderLight] = ImVec4(0.23f, 0.23f, 0.25f, 1.00f);   // Prefer using Alpha=1.0 here
 		colors[ImGuiCol_TableRowBg] = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
-		colors[ImGuiCol_TableRowBgAlt] = ImVec4(1.00f, 1.00f, 1.00f, 0.06f);
+		colors[ImGuiCol_TableRowBgAlt] = ImVec4(1.00f, 1.00f, 1.00f, 0.01f);
 		colors[ImGuiCol_TextLink] = ImVec4(0.26f, 0.59f, 0.98f, 1.0f);
 		colors[ImGuiCol_TextSelectedBg] = ImVec4(0.26f, 0.59f, 0.98f, 0.35f);
 		colors[ImGuiCol_DragDropTarget] = ImVec4(1.00f, 1.00f, 0.00f, 0.90f);
@@ -270,28 +270,28 @@ export namespace Utils {
 
 			ImVec2 screenPos = ImGui::GetCursorScreenPos();
 
-            //fgDrawList->AddRect(screenPos + titlebarMin, screenPos + titlebarMax, ImColor32(255, 0, 0, 255));
+            //fgDrawList->AddRect(screenPos + titlebarMin, screenPos + titlebarMax, ImColorU32(255, 0, 0, 255));
             //fgDrawList->AddRect(
             //    ImVec2{ screenPos.x + titlebarMax.x / 2 - ImGui::CalcTextSize(title.c_str()).x, screenPos.y + titlebarMin.y },
             //    ImVec2{ screenPos.x + titlebarMax.x / 2 + ImGui::CalcTextSize(title.c_str()).x, screenPos.y + titlebarMax.y },
-            //    ImColor32(255, 0, 0, 255)
+            //    ImColorU32(255, 0, 0, 255)
             //);
 			
 			bgDrawList->AddRectFilledMultiColor(
 				screenPos + titlebarMin,
 				screenPos + titlebarMax,
-				ImColor32(50, 70, 50, 255),
-				ImColor32(50, 50, 50, 255),
-				ImColor32(50, 50, 50, 255),
-				ImColor32(50, 50, 50, 255)
+				ImColorU32(50, 70, 50, 255),
+				ImColorU32(50, 50, 50, 255),
+				ImColorU32(50, 50, 50, 255),
+				ImColorU32(50, 50, 50, 255)
 			);
 		
 			bgDrawList->AddRectFilledMultiColor(
                 screenPos + titlebarMin,
                 screenPos + ImGui::GetCursorPos() + ImGui::GetWindowSize() - ImVec2(ImGui::GetWindowSize().x * 3 / 4, 0),
 				ImGui::GetColorU32(ImVec4(0.278431f, 0.701961f, 0.447059f, 1.00f)),
-				ImColor32(50, 50, 50, 0),
-				ImColor32(50, 50, 50, 0),
+				ImColorU32(50, 50, 50, 0),
+				ImColorU32(50, 50, 50, 0),
 				ImGui::GetColorU32(ImVec4(0.278431f, 0.701961f, 0.447059f, 1.00f))
 			);
 

@@ -2754,6 +2754,7 @@ HE::ApplicationContext* HE::CreateApplication(ApplicationCommandLineArgs args)
 
     auto log = (Utils::GetAppDataPath(c_AppName) / c_AppName).string();
 
+    desc.windowDesc.swapChainDesc.swapChainFormat = nvrhi::Format::SRGBA8_UNORM;
     desc.windowDesc.customTitlebar = true;
     desc.windowDesc.iconFilePath = c_AppIconPath;
     desc.windowDesc.title = c_AppName;
