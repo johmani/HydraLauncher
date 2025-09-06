@@ -63,6 +63,10 @@ workspace "HydraLauncher"
                 "Source/**.cpp",
                 "Source/**.cppm",
                 "*.lua",
+
+                "Resources/Icons/HydraLauncher.aps",
+                "Resources/Icons/HydraLauncher.rc",
+                "Resources/Icons/resource.h",
             }
             
             includedirs {
